@@ -7,7 +7,7 @@
     "start": "NODE_ENV=production babel-node src/index.js",
     "dev": "NODE_ENV=development nodemon --exec babel-node src/index.js",
     "lint": "eslint --fix ./src",
-    "reinit_db": "babel-node util/reinit_db.js"
+    "reinit-db": "babel-node util/reinit_db.js"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",

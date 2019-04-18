@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      second_name: {
+      secondName: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -26,7 +26,8 @@ module.exports = {
       },
       username: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       password: {
         type: Sequelize.STRING,

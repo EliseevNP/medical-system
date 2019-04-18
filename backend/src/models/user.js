@@ -9,7 +9,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    second_name: {
+    secondName: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -23,7 +23,8 @@ export default (sequelize, DataTypes) => {
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     password: {
       type: DataTypes.STRING,

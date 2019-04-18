@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
 
   organization.associate = function(models) {
     organization.hasMany(models.doctor, {
-      foreignKey: 'organization_id',
+      foreignKey: 'organizationId',
       onDelete: 'cascade'
     });
   };

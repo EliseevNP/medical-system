@@ -1,16 +1,19 @@
-// import HTTPService from './http/service';
-// import http from '../config/http';
+import HttpService from './http/service';
+import httpCfg from '../config/http';
 import models from './models';
-// import routes from './routes';
+import routes from './routes';
+import log from './logging/service';
+import { errorToObject } from './utils/routes';
 
-// Error.stackTraceLimit = Infinity;
+async function main () {
+  try {
+    const httpService = new HttpService(routes);
+    await models.sequelize.sync();
+    log.trace('SEQUELIZE', { message: 'Sync all defined models in DB successfully', isShort: true });
+    httpService.start(process.env.PORT || httpCfg[process.env.NODE_ENV].port);
+  } catch(err) {
+    log.critical('INDEX', errorToObject(err));
+  }
+}
 
-// const httpService = new HTTPService(routes);
-
-models.sequelize.sync().then(() => {
-  console.log('[SEQUELIZE] Sync all defined models in DB successfully');
-}).catch(error => {
-  console.log('[SEQUELIZE]', error);
-});
-
-// httpService.start(process.env.PORT || http[process.env.NODE_ENV].port);
+main();
