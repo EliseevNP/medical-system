@@ -165,3 +165,9 @@ export const organizationIdConstraints = {
     allowNull: false
   }
 };
+export const optionalOrganizationIdConstraints = {
+  checkIsUUIDv4: {
+    message: errors.INVALID_ORGANIZATION_ID,
+    allowNull: false
+  }
+};
