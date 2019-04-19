@@ -1,7 +1,4 @@
-import ControlledError from '../utils/controlledError';
-import errors from '../../config/errors';
 import log from '../logging/service';
-import models from '../models';
 
 export function errorToObject (error) {
   return {
@@ -16,16 +13,20 @@ export function errorToObject (error) {
 
 export function handleErrors (name, errors, res, statusCode) {
   let errorCodes = [];
+  let errorObjects = [];
   errors.forEach(error => {
     let logLevel = log.getLogLevels().ERROR;
     if (error.name === 'ControlledError') {
       logLevel = error.logLevel;
       errorCodes.push(error.code);
     }
-    log.log(name, { error: errorToObject(error) }, res.req, res, logLevel);
+    errorObjects.push({ error: errorToObject(error), logLevel });
   });
   let data = {
     errors: errorCodes
   };
   res.status(statusCode).json(data);
+  errorObjects.forEach( errorObject => {
+    log.log(name, { error: errorObject.error }, res.req, res, errorObject.logLevel);
+  });
 }

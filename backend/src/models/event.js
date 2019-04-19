@@ -5,11 +5,11 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    doctor_id: {
+    doctorId: {
       type: DataTypes.UUID,
       allowNull: false
     },
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: true
     },
@@ -27,11 +27,11 @@ export default (sequelize, DataTypes) => {
 
   event.associate = function(models) {
     event.belongsTo(models.doctor, {
-      foreignKey: 'doctor_id',
+      foreignKey: 'doctorId',
       onDelete: 'cascade'
     });
     event.belongsTo(models.user, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
       onDelete: 'cascade'
     });
   };

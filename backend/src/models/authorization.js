@@ -5,13 +5,14 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: false
     },
-    last_usage: {
+    lastUsage: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: DataTypes.NOW
     }
   }, {
     timestamps: false
@@ -19,7 +20,7 @@ export default (sequelize, DataTypes) => {
 
   authorization.associate = function(models) {
     authorization.belongsTo(models.user, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
       onDelete: 'cascade'
     });
   };

@@ -8,13 +8,14 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      user_id: {
+      userId: {
         type: Sequelize.UUID,
         allowNull: false
       },
-      last_usage: {
+      lastUsage: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: Sequelize.NOW
       }
     });
   },

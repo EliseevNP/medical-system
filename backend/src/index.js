@@ -1,9 +1,9 @@
+import { errorToObject } from './utils/routes';
 import HttpService from './http/service';
 import httpCfg from '../config/http';
+import log from './logging/service';
 import models from './models';
 import routes from './routes';
-import log from './logging/service';
-import { errorToObject } from './utils/routes';
 
 async function main () {
   try {

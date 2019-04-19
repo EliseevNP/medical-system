@@ -4,7 +4,7 @@ import ControlledError from '../utils/controlledError';
 import log from '../logging/service';
 import validate from 'validate.js';
 
-export default function validateMiddleware(req, res, next) {
+export default function validationMiddleware(req, res, next) {
   try {
     let bodyValidationResult = validate(req.body, req.bodyConstraints);
     let paramsValidationResult = validate(req.params, req.paramsConstraints);
@@ -23,12 +23,12 @@ export default function validateMiddleware(req, res, next) {
     }
 
     if (errorCodes.length !== 0) {
-      handleErrors('VALIDATE_MIDDLEWARE', errorCodes, res, 400);
+      handleErrors('VALIDATION_MIDDLEWARE', errorCodes, res, 400);
     } else {
       next();
     }
   } catch (err) {
     res.sendStatus(500);
-    log.error('VALIDATE_MIDDLEWARE', { error: errorToObject(err) }, req, res);
+    log.error('VALIDATION_MIDDLEWARE', { error: errorToObject(err) }, req, res);
   }
 }

@@ -5,15 +5,15 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: false
     },
-    organization_id: {
+    organizationId: {
       type: DataTypes.UUID,
       allowNull: false
     },
-    department_id: {
+    departmentId: {
       type: DataTypes.UUID,
       allowNull: false
     },
@@ -35,19 +35,19 @@ export default (sequelize, DataTypes) => {
 
   doctor.associate = function(models) {
     doctor.belongsTo(models.user, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
       onDelete: 'cascade'
     });
     doctor.belongsTo(models.organization, {
-      foreignKey: 'organization_id',
+      foreignKey: 'organizationId',
       onDelete: 'cascade'
     });
     doctor.belongsTo(models.department, {
-      foreignKey: 'department_id',
+      foreignKey: 'departmentId',
       onDelete: 'cascade'
     });
     doctor.hasMany(models.event, {
-      foreignKey: 'doctor_id',
+      foreignKey: 'doctorId',
       onDelete: 'cascade'
     });
   };

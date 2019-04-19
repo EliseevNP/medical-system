@@ -1,5 +1,5 @@
-import process from 'process';
 import loggingCfg from '../../config/logging';
+import process from 'process';
 
 const logLevels = {
   TRACE: 'trace',

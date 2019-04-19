@@ -1,7 +1,8 @@
+import { errorToObject } from '../utils/routes';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import { errorToObject } from '../utils/routes';
 import log from '../logging/service';
 
 const application = express();
@@ -13,6 +14,7 @@ class HTTPService {
     application.use(bodyParser.json({
       limit: '10mb'
     }));
+    application.use(cookieParser());
     application.use('/api/', routes);
   }
 

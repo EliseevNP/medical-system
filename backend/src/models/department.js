@@ -5,7 +5,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    organization_id: {
+    organizationId: {
       type: DataTypes.UUID,
       allowNull: false
     },
@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
 
   department.associate = function(models) {
     department.belongsTo(models.organization, {
-      foreignKey: 'organization_id',
+      foreignKey: 'organizationId',
       onDelete: 'cascade'
     });
   };

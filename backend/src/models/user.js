@@ -36,11 +36,11 @@ export default (sequelize, DataTypes) => {
 
   user.associate = function(models) {
     user.hasMany(models.authorization, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
       onDelete: 'cascade'
     });
     user.hasMany(models.event, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
       onDelete: 'cascade'
     });
   };

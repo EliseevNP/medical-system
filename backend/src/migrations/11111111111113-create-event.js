@@ -8,11 +8,11 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      doctor_id: {
+      doctorId: {
         type: Sequelize.UUID,
         allowNull: false
       },
-      user_id: {
+      userId: {
         type: Sequelize.UUID,
         allowNull: true
       },

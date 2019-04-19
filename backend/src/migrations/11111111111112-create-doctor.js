@@ -8,15 +8,15 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      user_id: {
+      userId: {
         type: Sequelize.UUID,
         allowNull: false
       },
-      organization_id: {
+      organizationId: {
         type: Sequelize.UUID,
         allowNull: false
       },
-      department_id: {
+      departmentId: {
         type: Sequelize.UUID,
         allowNull: false
       },
