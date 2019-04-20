@@ -12,7 +12,7 @@ const router = Router();
 router.get('/',
   (req, res, next) => {
     req.queryConstraints = {
-      organizationId: optionalOrganizationIdConstraints,
+      organizationId: optionalOrganizationIdConstraints
     };
     next();
   },
@@ -20,7 +20,7 @@ router.get('/',
   async (req, res) => {
     try {
       let result = {};
-      let where = (req.query.organizationId) ? { organizationId: req.query.organizationId } : undefined;
+      let where = (req.query.organizationId) ? { organizationId: req.query.organizationId } : {};
       (await models.department.findAll({ where })).forEach((department) => {
         result[department.id] = {
           organizationId: department.organizationId,

@@ -6,7 +6,7 @@ validate.validators.checkIsString = function(value, options) {
   if (value === undefined || value === null) {
     return;
   }
-  if (!validate.checkIsString(value)) {
+  if (!validate.isString(value)) {
     return options.message;
   }
   return;
@@ -169,5 +169,45 @@ export const optionalOrganizationIdConstraints = {
   checkIsUUIDv4: {
     message: errors.INVALID_ORGANIZATION_ID,
     allowNull: false
+  }
+};
+
+export const optionalSpecialtyConstraints = {
+  length: {
+    minimum: 3,
+    maximum: 50,
+    message: errors.INVALID_SPECIALTY_LENGTH,
+  },
+  checkIsString: {
+    message: errors.SPECIALTY_IS_NOT_A_STRING
+  }
+};
+
+export const doctorIdConstraints = {
+  presence: {
+    is: true,
+    message: errors.BLANK_DOCTOR_ID
+  },
+  checkIsUUIDv4: {
+    message: errors.INVALID_DOCTOR_ID,
+    allowNull: false
+  }
+};
+
+export const eventIdConstraints = {
+  presence: {
+    is: true,
+    message: errors.BLANK_EVENT_ID
+  },
+  checkIsUUIDv4: {
+    message: errors.INVALID_EVENT_ID,
+    allowNull: false
+  }
+};
+
+export const optionalStatusConstraints = {
+  inclusion: {
+    within: ['busy', 'free', 'unavailable'],
+    message: errors.UNKNOWN_EVENT_STATUS
   }
 };

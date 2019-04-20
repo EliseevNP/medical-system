@@ -35,7 +35,7 @@ router.get('/',
 router.get('/:id',
   (req, res, next) => {
     req.paramsConstraints = {
-      id: organizationIdConstraints,
+      id: organizationIdConstraints
     };
     next();
   },

@@ -1,0 +1,92 @@
+import { Router } from 'express';
+import { handleErrors } from '../utils/routes';
+import { optionalOrganizationIdConstraints, optionalSpecialtyConstraints, doctorIdConstraints } from '../validators/constraints';
+import ControlledError from '../utils/controlledError';
+import errors from '../../config/errors';
+import log from '../logging/service';
+import models from '../models';
+import validationMiddleware from '../middlewares/validate';
+
+const router = Router();
+
+router.get('/',
+  (req, res, next) => {
+    req.queryConstraints = {
+      organizationId: optionalOrganizationIdConstraints,
+      specialty: optionalSpecialtyConstraints
+    };
+    next();
+  },
+  validationMiddleware,
+  async (req, res) => {
+    try {
+      let result = {};
+
+      let where = {};
+      if (req.query.organizationId) where.organizationId = req.query.organizationId;
+      if (req.query.specialty) where.specialty = req.query.specialty;
+
+      (await models.doctor.findAll({ where })).forEach((doctor) => {
+        result[doctor.id] = {
+          name: doctor.name,
+          secondName: doctor.secondName,
+          patronymic: doctor.patronymic,
+          organizationId: doctor.organizationId,
+          departmentId: doctor.departmentId,
+          specialty: doctor.specialty,
+          category: doctor.category,
+          position: doctor.position
+        };
+      });
+      res.json(result);
+      res.status(200);
+      log.trace('SERVER', {}, req, res);
+    } catch (err) {
+      if (err.name === 'ControlledError') {
+        handleErrors('SERVER', [err], res, 400);
+      } else {
+        handleErrors('SERVER', [err], res, 500);
+      }
+    }
+  }
+);
+
+router.get('/:id',
+  (req, res, next) => {
+    req.paramsConstraints = {
+      id: doctorIdConstraints
+    };
+    next();
+  },
+  validationMiddleware,
+  async (req, res) => {
+    try {
+      let result = {};
+      let doctor = await models.doctor.findOne({ where: { id: req.params.id }});
+      if (!doctor) {
+        throw new ControlledError(errors.DOCTOR_NOT_FOUND, log.getLogLevels().WARNING);
+      }
+      result[doctor.id] = {
+        name: doctor.name,
+        secondName: doctor.secondName,
+        patronymic: doctor.patronymic,
+        organizationId: doctor.organizationId,
+        departmentId: doctor.departmentId,
+        specialty: doctor.specialty,
+        category: doctor.category,
+        position: doctor.position
+      };
+      res.json(result);
+      res.status(200);
+      log.trace('SERVER', {}, req, res);
+    } catch (err) {
+      if (err.name === 'ControlledError') {
+        handleErrors('SERVER', [err], res, 400);
+      } else {
+        handleErrors('SERVER', [err], res, 500);
+      }
+    }
+  }
+);
+
+export default router;

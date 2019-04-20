@@ -35,6 +35,10 @@ export default (sequelize, DataTypes) => {
   });
 
   user.associate = function(models) {
+    user.hasOne(models.doctor, {
+      foreignKey: 'userId',
+      onDelete: 'cascade'
+    });
     user.hasMany(models.authorization, {
       foreignKey: 'userId',
       onDelete: 'cascade'
