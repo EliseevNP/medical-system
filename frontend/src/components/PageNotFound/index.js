@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Icon } from "antd";
-import { createBrowserHistory } from 'history';
+import { Row, Col} from "antd";
 import './index.less';
-
-const history = createBrowserHistory();
 
 class PageNotFound extends Component {
   render() {
@@ -20,24 +17,6 @@ class PageNotFound extends Component {
           lg={{ span: 8, offset: 8 }}
         >
           <img alt="404" src="/images/error-404.svg" className='page-not-found-image'/>
-          <Row className='page-not-found-actions'>
-            <Col
-              xs={{ span: 24 }}
-              sm={{ span: 12 }}
-            >
-              <Button type="primary" block size='large' shape="round" onClick={history.goBack}>
-                <Icon type="rollback" />Назад
-              </Button>
-            </Col>
-            <Col
-              xs={{ span: 24 }}
-              sm={{ span: 12 }}
-            >
-              <Button type="primary" block size='large' shape="round" href='/'>
-                <Icon type="home" />На главную
-              </Button>
-            </Col>
-          </Row>
         </Col>
       </Row>
     );

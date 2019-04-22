@@ -1,4 +1,4 @@
-import languageCfg from 'config/language'
+// import languageCfg from 'config/language'
 
 const initState = {
   accessToken: null,
@@ -11,9 +11,9 @@ const initState = {
     email: null,
     username: null,
     phone: null,
-    data: {
-      language: languageCfg.default
-    }
+    // data: {
+    //   language: languageCfg.default
+    // }
   }
 }
 
