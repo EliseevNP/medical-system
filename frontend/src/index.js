@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import './index.less';
 import App from './components/App';
-import reducers from './store/reducers';
+import reducers from './store/reducers/';
 
 const store = createStore(
   combineReducers({

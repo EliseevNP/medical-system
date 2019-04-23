@@ -168,7 +168,7 @@ router.patch('/self',
       if (req.body.username && req.user.username !== req.body.username) {
         newUser.username = req.body.username;
       }
-      if (req.body.password && req.user.password !== req.body.password) {
+      if (req.body.password) {
         newUser.password = req.body.password;
       }
       if (validate.isEmpty(newUser)) {
