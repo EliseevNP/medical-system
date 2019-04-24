@@ -1,7 +1,15 @@
-import user from './user'
-import regionTree from './regionTree'
+import user from './user';
+import util from './util';
+import organizations from './organizations';
+import departments from './departments';
+import doctors from './doctors';
+import events from './events';
 
 export default {
   user,
-  regionTree
+  util,
+  organizations,
+  departments,
+  doctors,
+  events
 }

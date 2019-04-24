@@ -34,6 +34,10 @@ export default (sequelize, DataTypes) => {
   });
 
   doctor.associate = function(models) {
+    doctor.belongsTo(models.user, {
+      foreignKey: 'userId',
+      onDelete: 'cascade'
+    });
     doctor.belongsTo(models.organization, {
       foreignKey: 'organizationId',
       onDelete: 'cascade'

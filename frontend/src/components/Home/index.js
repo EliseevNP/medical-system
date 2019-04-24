@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import actions from '../../store/actions/';
 import './index.less';
 
 class Home extends Component {
@@ -8,7 +10,7 @@ class Home extends Component {
     return (
       <Row className='home-wrapper'>
         <NavLink to='/doctors'>
-          <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+          <Col xs={{ span: 24 }} lg={{ span: 12 }} className='home-first-col'>
             <Row type="flex" justify="center">
               <Col xs={{ span: 12 }} sm={{ span: 10 }} lg={{ span: 12 }} xl={{ span: 10 }} >
                 <img alt='logo' src='/images/schedule.svg' className='home-image'/>
@@ -20,7 +22,7 @@ class Home extends Component {
             </Row>
           </Col>
         </NavLink>
-        <NavLink to="/hospitals">
+        <NavLink to="/organizations">
           <Col xs={{ span: 24 }} lg={{ span: 12 }}>
             <Row type="flex" justify="center">
               <Col xs={{ span: 12 }} sm={{ span: 10 }} lg={{ span: 12 }} xl={{ span: 10 }} >
@@ -36,6 +38,18 @@ class Home extends Component {
       </Row>
     )
   }
+  componentDidMount() {
+    this.props.setCurrentLocation('/');
+  }
 }
 
-export default Home;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCurrentLocation: (currentLocation) => dispatch(actions.util.setCurrentLocation(currentLocation))
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Home);

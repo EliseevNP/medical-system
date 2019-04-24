@@ -25,6 +25,10 @@ class Profile extends Component {
       isLoading: false,
       modalTab: 'signinTab' // or signupTab
     }
+    this.setModalVisible = this.setModalVisible.bind(this);
+    this.setEditUserModalVisible = this.setEditUserModalVisible.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEditSubmit = this.handleEditSubmit.bind(this);
   }
 
   showNotification = (type, message, description) => {
@@ -101,7 +105,6 @@ class Profile extends Component {
         this.setState({ isLoading: false, modalTab: 'signinTab' });
       }
     } catch(err) {
-      console.log(err)
       this.props.setUser(null);
       cookie.remove('authorization', { path: '/' });
       this.showNotification("error", 'Что-то пошло не так', 'Проверьте подключение к интернету');
@@ -188,7 +191,7 @@ class Profile extends Component {
             <EditForm
               isLoading={this.state.isLoading}
               handleSubmit={this.handleEditSubmit}
-              setModalVisible={this.setEditUserModalVisible.bind(this)}
+              setModalVisible={this.setEditUserModalVisible}
             />
           </Modal>
         </React.Fragment>
@@ -213,7 +216,7 @@ class Profile extends Component {
                 <SigninForm
                   isLoading={this.state.isLoading}
                   handleSubmit={this.handleSubmit}
-                  setModalVisible={this.setModalVisible.bind(this)}
+                  setModalVisible={this.setModalVisible}
                 />
               </TabPane>
               <TabPane
@@ -224,7 +227,7 @@ class Profile extends Component {
                 <SignupForm
                   isLoading={this.state.isLoading}
                   handleSubmit={this.handleSubmit}
-                  setModalVisible={this.setModalVisible.bind(this)}
+                  setModalVisible={this.setModalVisible}
                 />
               </TabPane>
             </Tabs>

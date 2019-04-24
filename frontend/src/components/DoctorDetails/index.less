@@ -1,0 +1,28 @@
+@import (reference) "~antd/dist/antd.less";
+
+.doctor-details-table > tr > td {
+  vertical-align: top;
+  padding-bottom: 5px;
+}
+
+.doctor-details-table-header > td {
+  padding-top: 15px;
+}
+
+.doctor-card-avatar {
+  @media(min-width: @screen-xl) {
+    width: 100px;
+    float: left;
+  }
+  @media(max-width: @screen-xs) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.doctor-card-info {
+  @media(min-width: @screen-xl) {
+    width: calc(100% - 150px);
+    float: right;
+  }
+}
