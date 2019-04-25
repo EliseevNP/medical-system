@@ -21,7 +21,7 @@ router.get('/',
   validationMiddleware,
   async (req, res) => {
     try {
-      let result = { data: {}, now: (new Date()).toISOString() };
+      let result = {};
       (await models.event.findAll({
         where: {
           doctorId: req.query.doctorId,
@@ -29,7 +29,7 @@ router.get('/',
             [models.Sequelize.Op.gte]: Date.now()
           }
         }})).forEach((event) => {
-        result.data[event.id] = {
+        result[event.id] = {
           status: event.status,
           date: event.date,
           userId: event.userId,
@@ -112,14 +112,11 @@ router.patch('/:id',
       await models.event.update(newEvent, { where: { id: req.params.id }});
       await updatedEvent.reload();
       res.json({
-        now: Date.now().toISOString(),
-        data: {
-          [updatedEvent.id]: {
-            status: updatedEvent.status,
-            date: updatedEvent.date,
-            userId: updatedEvent.userId,
-            doctorId: updatedEvent.doctorId
-          }
+        [updatedEvent.id]: {
+          status: updatedEvent.status,
+          date: updatedEvent.date,
+          userId: updatedEvent.userId,
+          doctorId: updatedEvent.doctorId
         }
       });
       res.status(200);

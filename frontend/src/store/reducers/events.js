@@ -1,4 +1,4 @@
-const initState = { data: {}, now: null };
+const initState = {};
 
 const events = (state = initState, action) => {
   switch (action.type) {
@@ -6,7 +6,7 @@ const events = (state = initState, action) => {
       if (action.payload) {
         return Object.assign({}, state, action.payload);
       } else {
-        return { data: {}, now: null };
+        return {};
       }
     default:
       return state
