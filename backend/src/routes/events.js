@@ -21,9 +21,15 @@ router.get('/',
   validationMiddleware,
   async (req, res) => {
     try {
-      let result = {};
-      (await models.event.findAll({ where: { doctorId: req.query.doctorId }})).forEach((event) => {
-        result[event.id] = {
+      let result = { data: {}, now: (new Date()).toISOString() };
+      (await models.event.findAll({
+        where: {
+          doctorId: req.query.doctorId,
+          date: {
+            [models.Sequelize.Op.gte]: Date.now()
+          }
+        }})).forEach((event) => {
+        result.data[event.id] = {
           status: event.status,
           date: event.date,
           userId: event.userId,
@@ -57,7 +63,13 @@ router.patch('/:id',
   validationMiddleware,
   async (req, res) => {
     try {
-      let updatedEvent = await models.event.findOne({ where: { id: req.params.id }});
+      let updatedEvent = await models.event.findOne({
+        where: {
+          id: req.params.id,
+          date: {
+            [models.Sequelize.Op.gte]: Date.now()
+          }
+        }});
       if (!updatedEvent) {
         throw new ControlledError(errors.EVENT_NOT_FOUND, log.getLogLevels().WARNING);
       }
@@ -100,10 +112,15 @@ router.patch('/:id',
       await models.event.update(newEvent, { where: { id: req.params.id }});
       await updatedEvent.reload();
       res.json({
-        status: updatedEvent.status,
-        date: updatedEvent.date,
-        userId: updatedEvent.userId,
-        doctorId: updatedEvent.doctorId
+        now: Date.now().toISOString(),
+        data: {
+          [updatedEvent.id]: {
+            status: updatedEvent.status,
+            date: updatedEvent.date,
+            userId: updatedEvent.userId,
+            doctorId: updatedEvent.doctorId
+          }
+        }
       });
       res.status(200);
       log.trace('SERVER', {}, req, res);

@@ -5,7 +5,7 @@ import axios from 'axios';
 import httpCfg from '../../config/http';
 import FaUserMd from 'react-icons/lib/fa/user-md';
 import { NavLink } from 'react-router-dom';
-import { Row, Col,Empty, Spin, Breadcrumb, Divider, Icon, Tabs, Avatar, Typography, notification } from 'antd';
+import { Row, Col,Empty, Spin, Breadcrumb, Divider, Icon, Tabs, Avatar, Typography, Table, notification } from 'antd';
 import './index.less';
 
 const { Text } = Typography;
@@ -31,6 +31,58 @@ class DoctorDetails extends Component {
       description,
       duration: 5
     });
+  }
+
+  getShedule = () => {
+    let result = [];
+    let eventsArray = [];
+    Object.keys(this.props.events.data).forEach((eventId) => {
+      eventsArray.push(Object.assign({id: eventId}, this.props.events.data[eventId], {date: new Date(this.props.events.data[eventId].date)}));
+    });
+    eventsArray.sort((a, b) => {
+      return (a.date > b.date) ? 1 : -1;
+    });
+    let resultIndex = 0;
+    for (let i = 0; i < eventsArray.length; i++) {
+      if (!result[resultIndex]) {
+        result[resultIndex] = [eventsArray[i]];
+        continue;
+      }
+      if (result[resultIndex][0].date.getDate() === eventsArray[i].date.getDate()) {
+        result[resultIndex].push(eventsArray[i]);
+      } else {
+        resultIndex++;
+        i--;
+      }
+    }
+    result.forEach((day) => { day.unshift(day[0].date.toISOString()) });
+
+    function transpose(a) {
+      // Calculate the width and height of the Array
+      var w = a.length || 0;
+      var h = Math.max.apply(Math, a.map(function (el) { return el.length }))
+      // In case it is a zero matrix, no transpose routine needed.
+      if(h === 0 || w === 0) { return []; }
+      /**
+       * @var {Number} i Counter
+       * @var {Number} j Counter
+       * @var {Array} t Transposed data is stored in this array.
+       */
+      var i, j, t = [];
+      // Loop through every item in the outer array (height)
+      for(i = 0; i < h; i++) {
+        // Insert a new row (array)
+        t[i] = [];
+        // Loop through every item per item in outer array (width)
+        for(j = 0; j < w; j++) {
+          // Save transposed data.
+          t[i][j] = a[j][i];
+        }
+      }
+      return t;
+    }
+    result = transpose(result);
+    return result;
   }
 
   async componentWillMount() {
@@ -87,13 +139,13 @@ class DoctorDetails extends Component {
         throw new Error('Не удалось загрузить информацию о расписании');
       }
 
-      console.log(eventsResponse.data)
-
       this.props.setDoctors(response.data);
       this.props.setOrganizations(organizationResponse.data);
       this.props.setDepartments(departments);
       this.props.setEvents(null); // Clear old events before saving
       this.props.setEvents(eventsResponse.data);
+      console.log(this.getShedule());
+
       this.setState({ isLoading: false });
     } catch (err) {
       this.showNotification("error", 'Не удалось загрузить данные', 'Проверьте подключение к интернету и попробуйте обновить страницу');
@@ -130,42 +182,34 @@ class DoctorDetails extends Component {
                 key="sheduleTab"
               >
                 
-                {/*<Table
+                <Table
                   pagination={false}
                   scroll={{ x: true }}
                   dataSource={
-                    Object.keys(this.props.doctors)
-                      .filter((doctorId) => {
-                        return (this.props.doctors[doctorId].organizationId === this.props.match.params.organizationId);
-                      })
-                      .map((doctorId) => {
-                        return {
-                          key: doctorId,
-                          specialty: this.props.doctors[doctorId].specialty,
-                          doctor: doctorId,
-                          position: this.props.doctors[doctorId].position
-                        };
-                      })
+                    this.getShedule().slice(1).map((tableRow) => {
+                      let result = {};
+                      tableRow.forEach((event) => {
+                        result[event.date.toISOString()] = event;
+                      });
+                      result.key = tableRow[0].id;
+                      return result;
+                    })
                   }
-                  columns={[{
-                    title: 'Специальность',
-                    dataIndex: 'specialty',
-                    key: 'specialty'
-                  }, {
-                    title: 'Врач',
-                    dataIndex: 'doctor',
-                    key: 'doctor',
-                    render: doctorId => (
-                      <NavLink className='black-link' to={`/doctors/details/${doctorId}`}>
-                        {`${this.props.doctors[doctorId].secondName} ${this.props.doctors[doctorId].name} ${this.props.doctors[doctorId].patronymic}`}
-                      </NavLink>
-                    )
-                  }, {
-                    title: 'Должность',
-                    dataIndex: 'position',
-                    key: 'position'
-                  }]}
-                />*/}
+                  columns={ 
+                    (this.getShedule()[0]).map((isoString) => {
+                      return {
+                        title: isoString,
+                        dataIndex: isoString,
+                        render: event => (
+                          <div>
+                            <p>{event.id}</p>
+                            <p>{event.date}</p>
+                          </div>
+                        )
+                      }
+                    })
+                  }
+                />
 
 
               </TabPane>
@@ -201,7 +245,11 @@ class DoctorDetails extends Component {
                         </tr>
                         <tr>
                           <td><Text type="secondary">Организация</Text></td>
-                          <td>{this.props.organizations[this.props.doctors[this.props.match.params.doctorId].organizationId].title}</td>
+                          <td>
+                            <NavLink className='black-link' to={`/organizations/${this.props.doctors[this.props.match.params.doctorId].organizationId}`}>
+                              {this.props.organizations[this.props.doctors[this.props.match.params.doctorId].organizationId].title}
+                            </NavLink>
+                          </td>
                         </tr>
                         <tr>
                           <td><Text type="secondary">Отделение</Text></td>

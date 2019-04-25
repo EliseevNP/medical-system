@@ -28,13 +28,12 @@ async function addFreeWeekToDoctor(doctorId, date) {
   friday = dateAndTime.addDays(mondey, 4);
   saturday = dateAndTime.addDays(mondey, 5);
 
-  let currentTimeZoneOffsetInHours = mondey.getTimezoneOffset() / 60;
-  mondey.setHours(8 - currentTimeZoneOffsetInHours, 0, 0, 0);
-  tuesday.setHours(8 - currentTimeZoneOffsetInHours, 0, 0, 0);
-  wednesday.setHours(8 - currentTimeZoneOffsetInHours, 0, 0, 0);
-  thursday.setHours(8 - currentTimeZoneOffsetInHours, 0, 0, 0);
-  friday.setHours(8 - currentTimeZoneOffsetInHours, 0, 0, 0);
-  saturday.setHours(8 - currentTimeZoneOffsetInHours, 0, 0, 0);
+  mondey.setHours(8, 0, 0, 0);
+  tuesday.setHours(8, 0, 0, 0);
+  wednesday.setHours(8, 0, 0, 0);
+  thursday.setHours(8, 0, 0, 0);
+  friday.setHours(8, 0, 0, 0);
+  saturday.setHours(8, 0, 0, 0);
 
   let week = [mondey, tuesday, wednesday, thursday, friday, saturday];
 
