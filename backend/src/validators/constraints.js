@@ -25,6 +25,33 @@ validate.validators.checkIsUUIDv4 = function(value, options) {
   return;
 };
 
+validate.validators.checkUUIDv4Array = function(value, options) {
+  if (value === undefined) {
+    return;
+  }
+  if (options.allowNull && value === null) {
+    return;
+  }
+  if (validate.isString(value)) {
+    value = [value];
+  }
+  if (!validate.isArray(value)) {
+    return options.typeError;
+  }
+  try {
+    value.forEach((element) => {
+      if (uuidv4.is(element)) {
+        return;
+      } else {
+        throw new Error();
+      }
+    });
+    return;
+  } catch (err) {
+    return options.message;
+  }
+};
+
 export const nameConstraints = {
   presence: {
     is: true,
@@ -193,6 +220,13 @@ export const doctorIdConstraints = {
     allowNull: false
   }
 };
+export const optionalDoctorIdsConstraints = {
+  checkUUIDv4Array: {
+    message: errors.SOME_DOCTOR_ID_IS_INVALID,
+    typeError: errors.DOCTOR_IDS_IS_NOT_AN_ARRAY,
+    allowNull: false 
+  }
+};
 
 export const eventIdConstraints = {
   presence: {
@@ -209,5 +243,13 @@ export const optionalStatusConstraints = {
   inclusion: {
     within: ['busy', 'free', 'unavailable'],
     message: errors.UNKNOWN_EVENT_STATUS
+  }
+};
+
+export const optionalUserIdsConstraints = {
+  checkUUIDv4Array: {
+    message: errors.SOME_USER_ID_IS_INVALID,
+    typeError: errors.USER_IDS_IS_NOT_AN_ARRAY,
+    allowNull: false 
   }
 };

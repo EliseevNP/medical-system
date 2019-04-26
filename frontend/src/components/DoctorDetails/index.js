@@ -7,8 +7,11 @@ import FaUserMd from 'react-icons/lib/fa/user-md';
 import { NavLink } from 'react-router-dom';
 import { Row, Col,Empty, Spin, Breadcrumb, Divider, Icon, Tabs, Avatar, Typography, Table, notification } from 'antd';
 import selectors from '../../store/selectors/';
+import date from 'date-and-time';
+import Event from '../Event';
 import './index.less';
 
+date.locale('ru');
 const { Text } = Typography;
 const TabPane = Tabs.TabPane;
 const categories = {
@@ -22,8 +25,10 @@ class DoctorDetails extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      isEventActionHandling: false,
       activeTab: 'sheduleTab' // or doctorTab
     }
+    this.handleEventAction = this.handleEventAction.bind(this);
   }
 
   showNotification = (type, message, description) => {
@@ -32,6 +37,16 @@ class DoctorDetails extends Component {
       description,
       duration: 5
     });
+  }
+
+  handleEventAction = async (data) => {
+    this.setState({ isEventActionHandling: true });
+
+    console.log('HANDLE EVENT ACTION', data);
+
+    setTimeout(() => {
+      this.setState({ isEventActionHandling: false });
+    }, 1000);
   }
 
   async componentWillMount() {
@@ -88,11 +103,32 @@ class DoctorDetails extends Component {
         throw new Error('Не удалось загрузить информацию о расписании');
       }
 
+      let userIds = Object.keys(eventsResponse.data).map((eventId) => {
+        return eventsResponse.data[eventId].userId;
+      }).filter((userId) => {
+        return userId;
+      }).filter((userId, index, self) => {
+        return self.indexOf(userId) === index;
+      });
+
+      let usersResponse = await axios({
+        url: httpCfg.backendURL + `/api/v1/users/?doctorIds=${userIds}`,
+        method: 'get',
+        validateStatus: function () {
+          return true;
+        }
+      });
+      if (usersResponse.status !== 200) {
+        throw new Error('Не удалось загрузить информацию о пользователях');
+      }
+
       this.props.setDoctors(response.data);
       this.props.setOrganizations(organizationResponse.data);
       this.props.setDepartments(departments);
       this.props.setEvents(null); // Clear old events before saving
       this.props.setEvents(eventsResponse.data);
+      this.props.setUsers(null); // Clear old users before saving
+      this.props.setUsers(usersResponse.data);
       this.setState({ isLoading: false });
     } catch (err) {
       this.showNotification("error", 'Не удалось загрузить данные', 'Проверьте подключение к интернету и попробуйте обновить страницу');
@@ -100,6 +136,7 @@ class DoctorDetails extends Component {
       this.props.setDepartments(null);
       this.props.setDoctors(null);
       this.props.setEvents(null);
+      this.props.setUsers(null);
       this.setState({ isLoading: false });
     }
   }
@@ -117,18 +154,22 @@ class DoctorDetails extends Component {
       if (this.props.shedule.length !== 0) {
         columns = this.props.shedule[0].map((isoString, index) => {
           return {
-            title: isoString,
+            title: date.format((new Date(isoString)), 'DD.MM.YY, ddd').toLowerCase(),
             dataIndex: index,
+            className: 'shedule-table-column',
+            align: 'center',
             render: event => {
-              if (event) {
-                return (
-                  <div>
-                    {event.date.toISOString()}
-                  </div>
-                )
-              } else {
-                return undefined;
-              }
+              return (
+                <Event
+                  eventUser={this.props.users[event.userId]}
+                  eventDoctor={Object.assign({}, this.props.doctors[event.doctorId], {id: event.doctorId})}
+                  eventStatus={event.status}
+                  eventDate={event.date}
+                  selfUser={this.props.user}
+                  handleEventAction={this.handleEventAction}
+                  isEventActionHandling={this.state.isEventActionHandling}
+                />
+              )
             }
           }
         });
@@ -158,8 +199,9 @@ class DoctorDetails extends Component {
                 key="sheduleTab"
               >
                 <Table
+                  style={{ scrollbarXPosition: 'top' }}
                   pagination={false}
-                  scroll={{x: true}}
+                  scroll={{x: true, y: 'calc(80vh)'}}
                   bordered
                   dataSource={dataSource}
                   columns={columns}
@@ -242,6 +284,8 @@ class DoctorDetails extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    user: state.user,
+    users: state.users,
     organizations: state.organizations,
     doctors: state.doctors,
     departments: state.departments,
@@ -255,7 +299,8 @@ const mapDispatchToProps = (dispatch) => {
     setOrganizations: (organizations) => dispatch(actions.organizations.setOrganizations(organizations)),
     setDepartments: (departments) => dispatch(actions.departments.setDepartments(departments)),
     setDoctors: (doctors) => dispatch(actions.doctors.setDoctors(doctors)),
-    setEvents: (events) => dispatch(actions.events.setEvents(events))
+    setEvents: (events) => dispatch(actions.events.setEvents(events)),
+    setUsers: (users) => dispatch(actions.users.setUsers(users))
   }
 }
 

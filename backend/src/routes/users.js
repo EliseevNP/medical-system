@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { handleErrors } from '../utils/routes';
-import { nameConstraints, optionalNameConstraints, optionalPasswordConstraints, optionalPatronymicConstraints, optionalSecondNameConstraints, optionalUsernameConstraints, passwordConstraints, patronymicConstraints, secondNameConstraints, usernameConstraints } from '../validators/constraints';
+import { nameConstraints, optionalNameConstraints, optionalPasswordConstraints, optionalPatronymicConstraints, optionalSecondNameConstraints, optionalUsernameConstraints, passwordConstraints, patronymicConstraints, secondNameConstraints, usernameConstraints, optionalUserIdsConstraints } from '../validators/constraints';
 import ControlledError from '../utils/controlledError';
 import authenticationMiddleware from '../middlewares/authenticate';
 import errors from '../../config/errors';
@@ -117,16 +117,56 @@ router.post('/signout',
   }
 );
 
+router.get('/',
+  (req, res, next) => {
+    req.queryConstraints = {
+      userIds: optionalUserIdsConstraints
+    };
+    next();
+  },
+  validationMiddleware,
+  async (req, res) => {
+    try {
+      let result = {};
+
+      let where = {};
+      if (req.query.userIds) where.id = req.query.doctorIds;
+
+      (await models.user.findAll({ where })).forEach(async (user) => {
+        result[user.id] = {
+          name: user.name,
+          secondName: user.secondName,
+          patronymic: user.patronymic
+        };
+      });
+      res.json(result);
+      res.status(200);
+      log.trace('SERVER', {}, req, res);
+    } catch (err) {
+      if (err.name === 'ControlledError') {
+        handleErrors('SERVER', [err], res, 400);
+      } else {
+        handleErrors('SERVER', [err], res, 500);
+      }
+    }
+  }
+);
+
 router.get('/self',
   authenticationMiddleware,
   async (req, res) => {
     try {
+      let doctor = await req.user.getDoctor();
+      if (doctor) {
+        req.user.doctorId = doctor.id;
+      }
       res.json({
         name: req.user.name,
         secondName: req.user.secondName,
         patronymic: req.user.patronymic,
         role: req.user.role,
-        username: req.user.username
+        username: req.user.username,
+        doctorId: req.user.doctorId
       });
       res.status(200);
       log.trace('SERVER', {}, req, res);
@@ -166,6 +206,9 @@ router.patch('/self',
         newUser.patronymic = req.body.patronymic;
       }
       if (req.body.username && req.user.username !== req.body.username) {
+        if (await models.user.findOne({ where: { username: req.body.username }})) {
+          throw new ControlledError(errors.USERNAME_ALREADY_IN_USE, log.getLogLevels().WARNING);
+        }
         newUser.username = req.body.username;
       }
       if (req.body.password) {

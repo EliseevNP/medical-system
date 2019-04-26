@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { handleErrors } from '../utils/routes';
-import { optionalOrganizationIdConstraints, optionalSpecialtyConstraints, doctorIdConstraints } from '../validators/constraints';
+import { optionalOrganizationIdConstraints, optionalSpecialtyConstraints, doctorIdConstraints, optionalDoctorIdsConstraints } from '../validators/constraints';
 import ControlledError from '../utils/controlledError';
 import errors from '../../config/errors';
 import log from '../logging/service';
@@ -13,7 +13,8 @@ router.get('/',
   (req, res, next) => {
     req.queryConstraints = {
       organizationId: optionalOrganizationIdConstraints,
-      specialty: optionalSpecialtyConstraints
+      specialty: optionalSpecialtyConstraints,
+      doctorIds: optionalDoctorIdsConstraints
     };
     next();
   },
@@ -25,6 +26,7 @@ router.get('/',
       let where = {};
       if (req.query.organizationId) where.organizationId = req.query.organizationId;
       if (req.query.specialty) where.specialty = req.query.specialty;
+      if (req.query.doctorIds) where.id = req.query.doctorIds;
 
       (await models.doctor.findAll({ where, include: [models.user] })).forEach(async (doctor) => {
         result[doctor.id] = {

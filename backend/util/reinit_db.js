@@ -463,7 +463,7 @@ async function main () {
 
     log.trace('SEQUELIZE', { message: 'Add events...', isShort: true });
     let date = new Date();
-    for (let i = 0; i < 2; i ++) {
+    for (let i = 0; i < 3; i ++) {
       addFreeWeekToDoctor(doctorId1, new Date(date.toString()));
       addFreeWeekToDoctor(doctorId2, new Date(date.toString()));
       addFreeWeekToDoctor(doctorId3, new Date(date.toString()));
@@ -480,6 +480,37 @@ async function main () {
       addFreeWeekToDoctor(doctorId14, new Date(date.toString()));
       date = dateAndTime.addDays(date, 7);
     }
+
+    let nextWeek = new Date();
+    nextWeek = dateAndTime.addDays(nextWeek, 7);
+    let nextTwoWeek = new Date();
+    nextTwoWeek = dateAndTime.addDays(nextTwoWeek, 14);
+    await models.event.update({
+      status: 'unavailable'
+    }, {
+      where: {
+        date: {
+          [models.Sequelize.Op.lte]: nextWeek
+        }
+      }
+    });
+    await models.event.update({
+      status: 'busy',
+      userId: userId2
+    }, {
+      where: {
+        date: {
+          [models.Sequelize.Op.and]:  {
+            [models.Sequelize.Op.gte]: nextWeek,
+            [models.Sequelize.Op.lte]: nextTwoWeek
+          }
+        },
+        doctorId: {
+          [models.Sequelize.Op.not]: doctorId2
+        }
+      }
+    });
+
   } catch(err) {
     log.critical('REINIT DATABASE', errorToObject(err));
   }

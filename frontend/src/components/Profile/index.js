@@ -27,7 +27,7 @@ class Profile extends Component {
     }
     this.setModalVisible = this.setModalVisible.bind(this);
     this.setEditUserModalVisible = this.setEditUserModalVisible.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSigninSignupSubmit = this.handleSigninSignupSubmit.bind(this);
     this.handleEditSubmit = this.handleEditSubmit.bind(this);
   }
 
@@ -46,7 +46,7 @@ class Profile extends Component {
     this.setState({ isEditUserModalVisible });
   }
 
-  handleSubmit = async (data) => {
+  handleSigninSignupSubmit = async (data) => {
     try {
       this.setState({ isLoading: true });
 
@@ -102,7 +102,10 @@ class Profile extends Component {
           return;
         }
         this.showNotification("success", 'Регистрация успешна', 'Вы успешно создали новую учетную запись');
-        this.setState({ isLoading: false, modalTab: 'signinTab' });
+        this.setState({
+          isLoading: false,
+          modalTab: 'signinTab'
+        });
       }
     } catch(err) {
       this.props.setUser(null);
@@ -126,14 +129,21 @@ class Profile extends Component {
         withCredentials: true
       });
 
-      this.setState({ isLoading: false });
-      if (response.status !== 200) {
-        this.showNotification("error", 'Ошибка обновления', 'Не удалось обновить информацию об аккаунте');
-      } else {
-        this.showNotification("success", 'Обновление успешно', 'Информация об аккаунте успешно обновлена');
-        this.props.setUser(response.data);  
+      if (response.status === 400 && response.data.errors.includes(errors.USERNAME_ALREADY_IN_USE)) {
+        this.showNotification("error", 'Ошибка обновления', 'Не удалось обновить имя пользователя, так как оно уже используется');
+        this.setState({ isLoading: false });
+        return;
       }
 
+      if (response.status !== 200) {
+        this.showNotification("error", 'Ошибка обновления', 'Не удалось обновить информацию об аккаунте');
+        this.setState({ isLoading: false });
+        return;
+      }
+
+      this.showNotification("success", 'Обновление успешно', 'Информация об аккаунте успешно обновлена');
+      this.props.setUser(response.data);  
+      this.setState({ isLoading: false });
     } catch(err) {
       this.props.setUser(null);
       cookie.remove('authorization', { path: '/' });
@@ -215,7 +225,7 @@ class Profile extends Component {
               >
                 <SigninForm
                   isLoading={this.state.isLoading}
-                  handleSubmit={this.handleSubmit}
+                  handleSubmit={this.handleSigninSignupSubmit}
                   setModalVisible={this.setModalVisible}
                 />
               </TabPane>
@@ -226,7 +236,7 @@ class Profile extends Component {
               >
                 <SignupForm
                   isLoading={this.state.isLoading}
-                  handleSubmit={this.handleSubmit}
+                  handleSubmit={this.handleSigninSignupSubmit}
                   setModalVisible={this.setModalVisible}
                 />
               </TabPane>

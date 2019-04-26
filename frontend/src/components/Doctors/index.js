@@ -112,7 +112,7 @@ class Doctors extends Component {
                         <NavLink key={doctorId} to={`/doctors/details/${doctorId}`}>
                           <Text>
                             <List.Item className='doctors-doctor-list-item'>
-                              <Avatar size="large" icon="user" /> {this.props.doctors[doctorId].name} {this.props.doctors[doctorId].secondName} {this.props.doctors[doctorId].patronymic}
+                              <Avatar size="large" icon="user" /> {this.props.doctors[doctorId].secondName} {this.props.doctors[doctorId].name} {this.props.doctors[doctorId].patronymic}
                             </List.Item>
                           </Text>
                         </NavLink>
