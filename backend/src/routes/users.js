@@ -161,6 +161,7 @@ router.get('/self',
         req.user.doctorId = doctor.id;
       }
       res.json({
+        id: req.user.id,
         name: req.user.name,
         secondName: req.user.secondName,
         patronymic: req.user.patronymic,

@@ -30,6 +30,7 @@ router.get('/',
 
       (await models.doctor.findAll({ where, include: [models.user] })).forEach(async (doctor) => {
         result[doctor.id] = {
+          userId: doctor.user.id,
           name: doctor.user.name,
           secondName: doctor.user.secondName,
           patronymic: doctor.user.patronymic,
@@ -89,6 +90,7 @@ router.get('/:id',
         throw new ControlledError(errors.DOCTOR_NOT_FOUND, log.getLogLevels().WARNING);
       }
       result[doctor.id] = {
+        userId: doctor.user.id,
         name: doctor.user.name,
         secondName: doctor.user.secondName,
         patronymic: doctor.user.patronymic,

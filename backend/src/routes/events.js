@@ -87,7 +87,7 @@ router.patch('/:id',
           }
           newEvent.userId = req.user.id;
         } else if (req.body.status === 'free') {
-          if (req.user.role === 'doctor' && (await req.user.getDoctor()).id !== updatedEvent.doctorId) {
+          if (req.user.role === 'doctor' && (await req.user.getDoctor()).id !== updatedEvent.doctorId && req.user.id !== updatedEvent.userId) {
             // Если запрос сделал доктор, но событие ему не принадлежит
             throw new ControlledError(errors.PERMISSION_ERROR, log.getLogLevels().WARNING);
           }

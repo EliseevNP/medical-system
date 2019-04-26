@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import actions from '../../store/actions/';
 import axios from 'axios';
 import httpCfg from '../../config/http';
+import doctorCfg from  '../../config/doctor';
 import FaUserMd from 'react-icons/lib/fa/user-md';
 import { NavLink } from 'react-router-dom';
 import { Row, Col,Empty, Spin, Breadcrumb, Divider, Icon, Tabs, Avatar, Typography, Table, notification } from 'antd';
@@ -14,21 +15,16 @@ import './index.less';
 date.locale('ru');
 const { Text } = Typography;
 const TabPane = Tabs.TabPane;
-const categories = {
-  'higher': 'Высшая',
-  'first': 'Первая',
-  'second': 'Вторая'
-}
 
 class DoctorDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
-      isEventActionHandling: false,
       activeTab: 'sheduleTab' // or doctorTab
     }
-    this.handleEventAction = this.handleEventAction.bind(this);
+    this.setEvents = this.setEvents.bind(this);
+    this.updateAllEvents = this.updateAllEvents.bind(this);
   }
 
   showNotification = (type, message, description) => {
@@ -39,17 +35,11 @@ class DoctorDetails extends Component {
     });
   }
 
-  handleEventAction = async (data) => {
-    this.setState({ isEventActionHandling: true });
-
-    console.log('HANDLE EVENT ACTION', data);
-
-    setTimeout(() => {
-      this.setState({ isEventActionHandling: false });
-    }, 1000);
+  setEvents = (events) => {
+    this.props.setEvents(events);
   }
 
-  async componentWillMount() {
+  updateAllEvents = async () => {
     try {
       this.setState({ isLoading: true });
       let response = await axios({
@@ -141,6 +131,10 @@ class DoctorDetails extends Component {
     }
   }
 
+  componentWillMount() {
+    this.updateAllEvents();
+  }
+
   render() {
     if (this.state.isLoading) {
       return(
@@ -161,13 +155,14 @@ class DoctorDetails extends Component {
             render: event => {
               return (
                 <Event
-                  eventUser={this.props.users[event.userId]}
+                  eventUser={Object.assign({}, this.props.users[event.userId], {id: event.userId})}
                   eventDoctor={Object.assign({}, this.props.doctors[event.doctorId], {id: event.doctorId})}
                   eventStatus={event.status}
                   eventDate={event.date}
                   selfUser={this.props.user}
-                  handleEventAction={this.handleEventAction}
-                  isEventActionHandling={this.state.isEventActionHandling}
+                  eventId={event.id}
+                  setEvents={this.setEvents}
+                  updateAllEvents={this.updateAllEvents}
                 />
               )
             }
@@ -189,7 +184,7 @@ class DoctorDetails extends Component {
               <Breadcrumb.Item><NavLink to="/">Главная</NavLink></Breadcrumb.Item>
               <Breadcrumb.Item><NavLink to="/doctors">Расписание</NavLink></Breadcrumb.Item>
               <Breadcrumb.Item><NavLink to={`/doctors/${this.props.doctors[this.props.match.params.doctorId].specialty}`}>{this.props.doctors[this.props.match.params.doctorId].specialty}</NavLink></Breadcrumb.Item>
-              <Breadcrumb.Item>{this.props.doctors[this.props.match.params.doctorId].secondName} {this.props.doctors[this.props.match.params.doctorId].name} {this.props.doctors[this.props.match.params.doctorId].patronymic}</Breadcrumb.Item>
+              <Breadcrumb.Item>{this.props.doctors[this.props.match.params.doctorId].secondName} {this.props.doctors[this.props.match.params.doctorId].name} {this.props.doctors[this.props.match.params.doctorId].patronymic}{(this.props.user.id === this.props.doctors[this.props.match.params.doctorId].userId) ? ' (это вы)' : undefined}</Breadcrumb.Item>
             </Breadcrumb>
             <Divider className='breadcrumb-divider'/>
 
@@ -233,7 +228,7 @@ class DoctorDetails extends Component {
                         </tr>
                         <tr>
                           <td><Text type="secondary">Категория</Text></td>
-                          <td>{categories[this.props.doctors[this.props.match.params.doctorId].category]}</td>
+                          <td>{doctorCfg.categories[this.props.doctors[this.props.match.params.doctorId].category]}</td>
                         </tr>
                         <tr className='doctor-details-table-header'>
                           <td><b>Место работы</b></td>
