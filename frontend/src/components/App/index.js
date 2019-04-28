@@ -39,7 +39,7 @@ class App extends Component {
         <Header className='app-header'>
           <Row>
             <Col xs={{ span: 0 }} sm={{ span: 4 }} md={{ span: 3 }} xl={{ span: 2 }} xxl={{ span: 1 }}>
-              <img alt='logo' src='/images/heartbeat.svg' className="app-logo" />
+              <NavLink to="/"><img alt='logo' src='/images/heartbeat.svg' className="app-logo" /></NavLink>
             </Col>
             <Col xs={{ span: 23 }} sm={{ span: 19 }} md={{ span: 20 }} xl={{ span: 21 }} xxl={{ span: 22 }}>
               <Menu

@@ -90,6 +90,7 @@ class Event extends Component {
               modalType = 'checkUserInfoMakeFreeOrUnavailable';
             } else if (this.state.isUserEvent) {
               modalType = 'checkDoctorInfoMakeFree';
+              tooltipText = 'Вы записаны на это время';
             } else {
               tooltipText = 'Время занято';
             }
@@ -369,14 +370,18 @@ class Event extends Component {
         default:
           break;
       }
+      let eventCss = `event event-status-` + this.props.eventStatus;
+      if (this.state.isUserEvent) {
+        eventCss = eventCss + ' my-event';
+      }
       return (
         <React.Fragment>
-        <Tooltip title={tooltipText} placement='top'>
-          <div className={`event event-status-` + this.props.eventStatus} onClick={ () => { this.setState({ isModalVisible: true }) } }>
-            {date.format(this.props.eventDate, 'HH:mm')}
-          </div>
-        </Tooltip>
-        {modal}
+          <Tooltip title={tooltipText} placement='top'>
+            <div className={eventCss} onClick={ () => { this.setState({ isModalVisible: true }) } }>
+              {date.format(this.props.eventDate, 'HH:mm')}
+            </div>
+          </Tooltip>
+          {modal}
         </React.Fragment>
       );
     } else {
