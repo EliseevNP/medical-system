@@ -1,0 +1,22 @@
+version: '3'
+services:
+  medical_system_backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: gabella31415
+      POSTGRES_HOST: postgres
+    depends_on:
+      - postgres
+  postgres:
+    image: 'postgres:12-alpine'
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: gabella31415

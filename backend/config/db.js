@@ -1,25 +1,25 @@
 module.exports = {
   development: {
-    username: "postgres",
-    password: "gabella31415",
+    username: process.env.POSTGRES_USER || "postgres",
+    password: process.env.POSTGRES_PASSWORD || "gabella31415",
     database: "medical_system_development",
-    host: "localhost",
+    host: process.env.POSTGRES_HOST || "localhost",
     dialect: "postgres",
     logging: false
   },
   test: {
-    username: "postgres",
-    password: "gabella31415",
+    username: process.env.POSTGRES_USER || "postgres",
+    password: process.env.POSTGRES_PASSWORD || "gabella31415",
     database: "medical_system_test",
-    host: "localhost",
+    host: process.env.POSTGRES_HOST || "localhost",
     dialect: "postgres",
     logging: false
   },
   production: {
-    username:  "postgres",
-    password: "gabella31415",
+    username: process.env.POSTGRES_USER || "postgres",
+    password: process.env.POSTGRES_PASSWORD || "gabella31415",
     database: "medical_system",
-    host: "localhost",
+    host: process.env.POSTGRES_HOST || "localhost",
     dialect: "postgres",
     logging: false
   }

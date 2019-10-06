@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "private": true,
+  "author": "Nikita Eliseev",
   "scripts": {
     "start": "NODE_ENV=production babel-node src/index.js",
     "dev": "NODE_ENV=development nodemon --exec babel-node src/index.js",
-    "lint": "eslint --fix ./src",
+    "eslint": "eslint --fix ./src",
     "reinit-db": "babel-node util/reinit_db.js"
   },
   "dependencies": {

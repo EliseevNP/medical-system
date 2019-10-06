@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { handleErrors } from '../utils/routes';
-import { nameConstraints, optionalNameConstraints, optionalPasswordConstraints, optionalPatronymicConstraints, optionalSecondNameConstraints, optionalUsernameConstraints, passwordConstraints, patronymicConstraints, secondNameConstraints, usernameConstraints, optionalUserIdsConstraints } from '../validators/constraints';
+import { nameConstraints, optionalNameConstraints, optionalPasswordConstraints, optionalPatronymicConstraints, optionalSecondNameConstraints, optionalUserIdsConstraints, optionalUsernameConstraints, passwordConstraints, patronymicConstraints, secondNameConstraints, usernameConstraints } from '../validators/constraints';
 import ControlledError from '../utils/controlledError';
 import authenticationMiddleware from '../middlewares/authenticate';
 import errors from '../../config/errors';

@@ -2,9 +2,9 @@ import { Router } from 'express';
 import api from './api';
 import departments from './departments';
 import doctors from './doctors';
+import events from './events';
 import organizations from './organizations';
 import users from './users';
-import events from './events';
 
 const router = Router();
 

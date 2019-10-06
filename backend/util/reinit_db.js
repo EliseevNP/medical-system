@@ -84,12 +84,12 @@ async function main () {
     let userId14 = uuidv4();
     await models.user.bulkCreate([
       {
-        name: 'Владислав',
-        secondName: 'Бурлин',
-        patronymic: 'Вячеславович',
+        name: 'Елисеев',
+        secondName: 'Никита',
+        patronymic: 'Павлович',
         role: 'patient',
-        username: 'burlin',
-        password: 'burlin'
+        username: 'eliseev',
+        password: 'eliseev'
       },
       {
         id: userId1,

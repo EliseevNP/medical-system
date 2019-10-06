@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { handleErrors } from '../utils/routes';
 import { doctorIdConstraints, eventIdConstraints, optionalStatusConstraints } from '../validators/constraints';
+import { handleErrors } from '../utils/routes';
 import ControlledError from '../utils/controlledError';
+import authenticationMiddleware from '../middlewares/authenticate';
 import errors from '../../config/errors';
 import log from '../logging/service';
 import models from '../models';
-import validationMiddleware from '../middlewares/validate';
-import authenticationMiddleware from '../middlewares/authenticate';
 import validate from 'validate.js';
+import validationMiddleware from '../middlewares/validate';
 
 const router = Router();
 

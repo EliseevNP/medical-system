@@ -1,6 +1,6 @@
 import { Router } from 'express';
+import { doctorIdConstraints, optionalDoctorIdsConstraints, optionalOrganizationIdConstraints, optionalSpecialtyConstraints } from '../validators/constraints';
 import { handleErrors } from '../utils/routes';
-import { optionalOrganizationIdConstraints, optionalSpecialtyConstraints, doctorIdConstraints, optionalDoctorIdsConstraints } from '../validators/constraints';
 import ControlledError from '../utils/controlledError';
 import errors from '../../config/errors';
 import log from '../logging/service';

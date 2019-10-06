@@ -15,7 +15,7 @@ class HTTPService {
         callback(null, true);
       },
       credentials: true
-    }
+    };
     application.use(cors(corsOptions));
     application.use(bodyParser.json({
       limit: '10mb'

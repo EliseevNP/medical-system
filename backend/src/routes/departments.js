@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import { handleErrors } from '../utils/routes';
 import { optionalOrganizationIdConstraints } from '../validators/constraints';
-import ControlledError from '../utils/controlledError';
-import errors from '../../config/errors';
 import log from '../logging/service';
 import models from '../models';
 import validationMiddleware from '../middlewares/validate';
