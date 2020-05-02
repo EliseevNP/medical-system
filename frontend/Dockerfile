@@ -1,5 +1,6 @@
 FROM node:10-alpine
 WORKDIR /usr/medical-system-frontend
+COPY package*.json ./
+RUN npm ci
 COPY ./ ./
-RUN npm install --only=production
 CMD npm run start
